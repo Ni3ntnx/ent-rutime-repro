@@ -2,7 +2,30 @@
 
 package runtime
 
-// The schema-stitching logic is generated in entrepro/ent/runtime.go
+import (
+	"context"
+	"entrepro/ent/domain"
+	"entrepro/ent/schema"
+
+	"entgo.io/ent"
+	"entgo.io/ent/privacy"
+)
+
+// The init function reads all schema descriptors with runtime code
+// (default values, validators, hooks and policies) and stitches it
+// to their package variables.
+func init() {
+	domainMixin := schema.Domain{}.Mixin()
+	domain.Policy = privacy.NewPolicies(domainMixin[0], schema.Domain{})
+	domain.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := domain.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+}
 
 const (
 	Version = "v0.11.3"                                         // Version of ent codegen.

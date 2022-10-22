@@ -6,6 +6,7 @@ import (
 	"context"
 	"entrepro/ent/domain"
 	"entrepro/ent/predicate"
+	"errors"
 	"fmt"
 	"math"
 
@@ -307,6 +308,12 @@ func (dq *DomainQuery) prepareQuery(ctx context.Context) error {
 			return err
 		}
 		dq.sql = prev
+	}
+	if domain.Policy == nil {
+		return errors.New("ent: uninitialized domain.Policy (forgotten import ent/runtime?)")
+	}
+	if err := domain.Policy.EvalQuery(ctx, dq); err != nil {
+		return err
 	}
 	return nil
 }

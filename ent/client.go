@@ -216,7 +216,8 @@ func (c *DomainClient) GetX(ctx context.Context, id int) *Domain {
 
 // Hooks returns the client hooks.
 func (c *DomainClient) Hooks() []Hook {
-	return c.hooks.Domain
+	hooks := c.hooks.Domain
+	return append(hooks[:len(hooks):len(hooks)], domain.Hooks[:]...)
 }
 
 // MarketplaceitemClient is a client for the Marketplaceitem schema.

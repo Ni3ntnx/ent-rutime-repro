@@ -5,7 +5,8 @@ import (
 	//"entgo.io/ent/dialect"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/mixin"
-	//"common/models/ent/privacy"
+	"entrepro/ent/privacy"
+    "entrepro/ent/rule"
 )
 
 // TenantMixin for embedding the tenant info in different schemas.
@@ -21,15 +22,15 @@ func (TenantMixin) Fields() []ent.Field {
 	}
 }
 
-/*// Policy of the Tenant.
+// Policy of the Tenant.
 func (TenantMixin) Policy() ent.Policy {
 	//return FilterTenantRule()
 	return privacy.Policy{
 		Query: privacy.QueryPolicy{
-			FilterTenantRule(),
+			rule.FilterTenantRule(),
 		},
 		Mutation: privacy.MutationPolicy{
-			FilterTenantRule(),
+			rule.FilterTenantRule(),
 		},
 	}
-}*/
+}
